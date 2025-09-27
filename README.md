@@ -31,35 +31,42 @@ It provides three main tools:
     git clone https://github.com/<your-username>/InvestMentor.git  
     cd InvestMentor
 
-### 2. Setup virtual environment  
+2. Setup virtual environment  
+    ```bash
 	python -m venv venv # On Windows  
 	source venv/bin/activate # On Mac/Linux  
 
-### 3. Install dependencies  
+3. Install dependencies  
+    ```bash
 	pip install Django  
 	pip install requests
 	pip install chartjs
 
-### 4. Run database migrations  
+4. Run database migrations  
+    ```bash
 	python manage.py migrate  
 
-### 5. Start Django server 
+5. Start Django server 
+    ```bash
 	python manage.py runserver   
 	Now visit http://127.0.0.1:8000/
 
 ## LLaMA 2 Integration (via Ollama)
 The AI Roadmap Generator depends on Ollama to run LLaMA locally.
 
-### 1. Install Ollama
+1. Install Ollama
 - Download and install from Ollama.ai
 - Verify installation:  
+    ```bash
 	ollama --version
 
-### 2. Pull the LLaMA 2 model
+2. Pull the LLaMA 2 model
+    ```bash
 	ollama pull llama2
 
-## 3. Run Ollama server
-- In a separate terminal (before using roadmap):  
+3. Run Ollama server
+- In a separate terminal (before using roadmap): 
+    ```bash
 	ollama run llama2
 
 ## License
