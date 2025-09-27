@@ -26,9 +26,10 @@ It provides three main tools:
 ---
 
 ## Installation & Setup  
-### 1. Clone the repo  
-	git clone https://github.com/<your-username>/InvestMentor.git  
-	cd InvestMentor
+1. Clone the repo  
+	```bash  
+    git clone https://github.com/<your-username>/InvestMentor.git  
+    cd InvestMentor
 
 ### 2. Setup virtual environment  
 	python -m venv venv # On Windows  
