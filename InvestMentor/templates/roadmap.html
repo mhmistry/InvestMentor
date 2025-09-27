@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Investment Learning Roadmap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+  <!-- Top Navigation Bar -->
+  <nav class="bg-white shadow-md mb-8">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-lg font-semibold text-blue-600">📊 InvestMentor</div>
+      <div class="space-x-6 text-sm font-semibold">
+        <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+        <a href="/investment/" class="text-gray-700 hover:text-blue-600">Investment Planner</a>
+        <a href="/broker/" class="text-gray-700 hover:text-blue-600">Broker Comparison</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+    <h2 class="text-2xl font-bold text-blue-700 text-center mb-6">🧠 Generate Your Investment Learning Roadmap</h2>
+
+    <div class="space-y-4">
+      <div>
+        <label for="investmentType" class="block text-gray-700 font-medium">Select Investment Type:</label>
+        <select id="investmentType"
+          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">-- Choose one --</option>
+          <option value="Stocks">Stocks</option>
+          <option value="Mutual Funds">Mutual Funds</option>
+          <option value="Digital Gold">Digital Gold</option>
+          <option value="Fixed Deposit">Fixed Deposit</option>
+          <option value="Crypto">Crypto</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="currentLevel" class="block text-gray-700 font-medium">Current Knowledge Level:</label>
+        <select id="currentLevel"
+          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">-- Choose one --</option>
+          <option value="Beginner">Beginner</option>
+          <option value="Amateur">Amateur</option>
+          <option value="Expert">Expert</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="targetLevel" class="block text-gray-700 font-medium">Target Knowledge Level:</label>
+        <select id="targetLevel"
+          class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">-- Choose one --</option>
+          <option value="Basic">Basic</option>
+          <option value="Intermediate">Intermediate</option>
+          <option value="Advanced">Advanced</option>
+        </select>
+      </div>
+
+      <button onclick="generateRoadmap()"
+        class="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200">
+        Create Roadmap
+      </button>
+    </div>
+
+    <div id="roadmap" class="mt-10 space-y-4"></div>
+  </div>
+
+  <script>
+    function generateRoadmap() {
+      const investmentType = document.getElementById('investmentType').value;
+      const currentLevel = document.getElementById('currentLevel').value;
+      const targetLevel = document.getElementById('targetLevel').value;
+      const roadmapDiv = document.getElementById('roadmap');
+
+      roadmapDiv.innerHTML = `<div class="w-8 h-8 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin mx-auto"></div>`;
+
+      fetch('/generate-roadmap/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ investmentType, currentLevel, targetLevel })
+      })
+        .then(response => response.json())
+        .then(data => {
+          roadmapDiv.innerHTML = '';
+          if (data.error) {
+            roadmapDiv.textContent = 'Error: ' + data.error;
+          } else {
+            const text = data.roadmap.join('\n');
+            const sections = text.split(/\n(?=Step|Objective|Conclusion|Title)/g).filter(Boolean);
+
+            sections.forEach(section => {
+              const container = document.createElement('div');
+              container.className = 'p-4 bg-gray-50 rounded-lg border-l-4 border-blue-600 shadow-sm';
+
+              if (section.startsWith("Title")) {
+                container.innerHTML = `<h2 class="text-xl font-bold text-blue-700">${section.replace("Title:", "").trim()}</h2>`;
+              } else if (section.startsWith("Objective")) {
+                container.innerHTML = `<p class="text-md text-gray-700"><span class="font-semibold">🎯 Objective:</span> ${section.replace("Objective:", "").trim()}</p>`;
+              } else if (section.startsWith("Conclusion")) {
+                container.innerHTML = `<p class="text-md text-gray-700"><span class="font-semibold">📝 Conclusion:</span> ${section.replace("Conclusion:", "").trim()}</p>`;
+              } else if (section.startsWith("Step")) {
+                const lines = section.split('\n').map(l => l.trim()).filter(Boolean);
+                const headerLine = lines[0];
+                const subpoints = lines.slice(1).map(p =>
+                  `<li class="ml-4">${p.replace(/^Subpoint\s*\d+:\s*/i, '')}</li>`
+                ).join('');
+                const timeMatch = headerLine.match(/\(Time:\s*(.*?)\)/i);
+                const timeText = timeMatch && timeMatch[1] ? `<span class="text-sm text-gray-500 ml-2">(⏱️ ${timeMatch[1]})</span>` : '';
+                container.innerHTML = `
+                <h3 class="text-lg font-semibold text-blue-600">${headerLine.replace(/\(Time:.*?\)/, '').trim()}${timeText}</h3>
+                <ul class="mt-2 text-gray-700">${subpoints}</ul>
+              `;
+              }
+
+              roadmapDiv.appendChild(container);
+            });
+          }
+        })
+        .catch(error => {
+          roadmapDiv.textContent = 'Error: ' + error.message;
+        });
+    }
+  </script>
+
+</body>
+
+</html>

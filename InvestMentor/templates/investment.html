@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Investment Planner</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 font-sans text-gray-800">
+  <!-- Navigation Bar -->
+  <nav class="bg-white shadow-md mb-8">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-lg font-semibold text-blue-600">📊 InvestMentor</div>
+      <div class="space-x-6 text-sm font-medium">
+        <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+        <a href="/broker/" class="text-gray-700 hover:text-blue-600">Broker Comparison</a>
+        <a href="/roadmap/" class="text-gray-700 hover:text-blue-600">AI Roadmap</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="max-w-2xl mx-auto mt-4 p-6 bg-white rounded-2xl shadow-xl">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-blue-700">💰 Smart Investment Planner</h2>
+
+    <label class="block text-gray-700 font-semibold mb-2">Select your experience level:</label>
+    <select id="level" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300">
+      <option value="">-- Choose one --</option>
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="advanced">Advanced</option>
+    </select>
+
+    <label class="block text-gray-700 font-semibold mb-2">Enter your monthly savings (₹):</label>
+    <input type="number" id="amount" class="w-full p-2 border border-gray-300 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-300" placeholder="e.g., 10000" />
+
+    <button onclick="calculatePlan()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md transition-colors">
+      Generate Plan
+    </button>
+
+    <div id="result" class="mt-6 space-y-3"></div>
+    <canvas id="investmentChart" class="mt-6"></canvas>
+
+    <div id="roadmap" class="mt-6"></div>
+    <!--<div id="roadmap" class="mt-6 bg-gray-50 p-4 rounded-lg border"></div>-->
+  </div>
+
+  <script>
+    let chart;
+
+    function calculatePlan() {
+      const level = document.getElementById("level").value;
+      const amount = parseFloat(document.getElementById("amount").value);
+      const resultDiv = document.getElementById("result");
+      const roadmapDiv = document.getElementById("roadmap");
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      const allocationsMap = {
+        beginner: {
+          "Groww (Mutual Funds)": 0.6,
+          "FD (Safe Savings)": 0.2,
+          "INDmoney (Digital Gold)": 0.1,
+          "Emergency Fund": 0.1
+        },
+        intermediate: {
+          "Groww (Mutual Funds)": 0.4,
+          "Zerodha (Stocks)": 0.25,
+          "INDmoney (Gold/US Stocks)": 0.2,
+          "FD (Safe Savings)": 0.15
+        },
+        advanced: {
+          "Groww (Mutual Funds)": 0.3,
+          "Zerodha (Stocks)": 0.35,
+          "INDmoney (US Stocks/Gold)": 0.25,
+          "FD (Safe Savings)": 0.1
+        }
+      };
+
+      const roadmapMap = {
+        beginner: `
+          <h3 class="text-lg font-semibold mb-2 text-blue-600">📘 Beginner Roadmap</h3>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Start SIPs in large-cap mutual funds on Groww.</li>
+            <li>Keep 20% in Fixed Deposits or Savings account.</li>
+            <li>Invest small amounts in digital gold (INDmoney).</li>
+            <li>Create a basic emergency fund.</li>
+          </ul>
+        `,
+        intermediate: `
+          <h3 class="text-lg font-semibold mb-2 text-green-600">📗 Intermediate Roadmap</h3>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Diversify between mutual funds and stocks.</li>
+            <li>Use Zerodha for Nifty 50/ETF investments.</li>
+            <li>Explore INDmoney for US stocks & gold.</li>
+            <li>Maintain 15% in a fixed return safe zone.</li>
+          </ul>
+        `,
+        advanced: `
+          <h3 class="text-lg font-semibold mb-2 text-red-600">📕 Advanced Roadmap</h3>
+          <ul class="list-disc ml-5 space-y-1 text-sm">
+            <li>Actively trade or invest in undervalued stocks.</li>
+            <li>Choose diversified US ETFs via INDmoney.</li>
+            <li>Reduce FD usage and increase risk-based growth.</li>
+            <li>Monitor and rebalance monthly or quarterly.</li>
+          </ul>
+        `
+      };
+
+      const allocations = allocationsMap[level];
+      resultDiv.innerHTML = "";
+      const labels = [], values = [];
+
+      for (const [platform, percent] of Object.entries(allocations)) {
+        const investAmount = amount * percent;
+        const div = document.createElement("div");
+        div.className = "p-3 bg-gray-50 border border-gray-200 rounded-lg";
+        div.innerHTML = `<strong>${platform}:</strong> ₹${investAmount.toFixed(2)} (${(percent * 100).toFixed(0)}%)`;
+        resultDiv.appendChild(div);
+
+        labels.push(platform);
+        values.push(investAmount.toFixed(2));
+      }
+
+      roadmapDiv.innerHTML = roadmapMap[level];
+
+      if (chart) chart.destroy();
+      const ctx = document.getElementById("investmentChart").getContext("2d");
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: labels,
+          datasets: [{
+            data: values,
+            backgroundColor: ['#60A5FA', '#34D399', '#FBBF24', '#F87171']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InvestMentor</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-yellow-50 min-h-screen font-sans">
+
+    <!-- Navigation Bar -->
+  <nav class="bg-white shadow-md mb-8">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="text-lg font-semibold text-blue-600">📊 InvestMentor</div>
+      <div class="space-x-6 text-sm font-medium">
+        <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+        <a href="/investment/" class="text-gray-700 hover:text-blue-600">Investment Planner</a>
+        <a href="/broker/" class="text-gray-700 hover:text-blue-600">Broker Comparison</a>
+        <a href="/roadmap/" class="text-gray-700 hover:text-blue-600">AI Roadmap</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container mx-auto px-4 py-12 flex flex-col items-center">
+    <h1 class="text-4xl font-bold text-blue-800 mb-10">📊 InvestMentor</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+      <!-- Investment Planner -->
+      <a href="{% url 'investment_planner' %}" class="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transform transition hover:scale-105 border border-gray-200">
+        <h2 class="text-2xl font-semibold text-blue-600 mb-2 group-hover:text-blue-800">💰 Investment Planner</h2>
+        <p class="text-gray-600">Generate personalized investment allocations and roadmaps based on your experience level and monthly savings.</p>
+        <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg group-hover:bg-blue-600">Try Now</button>
+      </a>
+
+      <!-- Broker Comparison -->
+      <a href="{% url 'broker_tool' %}" class="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transform transition hover:scale-105 border border-gray-200">
+        <h2 class="text-2xl font-semibold text-yellow-600 mb-2 group-hover:text-yellow-800">🏦 Broker Comparison Tool</h2>
+        <p class="text-gray-600">Compare Indian brokers based on your investment style, goals, and budget and choose the one that's right for you.</p>
+        <button class="mt-4 px-4 py-2 bg-yellow-500 text-white rounded-lg group-hover:bg-yellow-600">Compare Now</button>
+      </a>
+
+      <!-- AI Roadmap -->
+      <a href="{% url 'roadmap_page' %}" class="group bg-white p-6 rounded-2xl shadow-xl hover:shadow-2xl transform transition hover:scale-105 border border-gray-200">
+        <h2 class="text-2xl font-semibold text-green-600 mb-2 group-hover:text-green-800">🧠 AI Roadmap</h2>
+        <p class="text-gray-600">Create personalized learning roadmaps for investment topics using AI based on your current knowledge level.</p>
+        <button class="mt-4 px-4 py-2 bg-green-500 text-white rounded-lg group-hover:bg-green-600">Open Assistant</button>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

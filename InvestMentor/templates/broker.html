@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Broker Comparison Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Top Navigation Bar -->
+    <nav class="bg-white shadow-md mb-8">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="text-lg font-semibold text-blue-600">📊 InvestMentor</div>
+            <div class="space-x-6 text-sm font-medium">
+                <a href="/" class="text-gray-700 hover:text-blue-600">Home</a>
+                <a href="/investment/" class="text-gray-700 hover:text-blue-600">Investment Planner</a>
+                <a href="/roadmap/" class="text-gray-700 hover:text-blue-600">AI Roadmap</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+        <h1 class="text-2xl font-semibold text-center text-blue-700 mb-6">🏦 Broker Comparison Tool</h1>
+
+        <form id="brokerForm" class="space-y-4">
+            <div>
+                <label for="investmentAmount" class="block font-medium text-gray-700">Investment Amount (₹):</label>
+                <input type="number" id="investmentAmount" min="500" required
+                    class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="e.g., 10000">
+            </div>
+
+            <div>
+                <label for="userLevel" class="block font-medium text-gray-700">User Level:</label>
+                <select id="userLevel" required
+                    class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">-- Choose one --</option>
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="expert">Expert</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="investmentType" class="block font-medium text-gray-700">Investment Type:</label>
+                <select id="investmentType" required
+                    class="mt-1 w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">-- Choose one --</option>
+                    <option value="stocks">Stocks</option>
+                    <option value="gold">Gold</option>
+                    <option value="mutual funds">Mutual Funds</option>
+                </select>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200 font-semibold">Compare
+                Brokers</button>
+        </form>
+
+        <div class="overflow-x-auto mt-8">
+            <table id="resultsTable"
+                class="min-w-full divide-y divide-gray-200 text-sm text-left hidden border border-gray-200 rounded-lg overflow-hidden">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="px-4 py-2">Broker</th>
+                        <th class="px-4 py-2">Brokerage</th>
+                        <th class="px-4 py-2">User Reviews</th>
+                        <th class="px-4 py-2">Customer Support</th>
+                        <th class="px-4 py-2">UI Score</th>
+                        <th class="px-4 py-2">Total Score</th>
+                        <th class="px-4 py-2">Suggested</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody" class="bg-white divide-y divide-gray-100">
+                    <!-- Dynamic rows go here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const brokers = [
+            {
+                name: "Zerodha",
+                logo: "https://zerodha.com/static/images/logo.png",
+                amountRange: { min: 1000, max: 1000000 },
+                brokerage: "₹20/trade (F&O), ₹0 (Delivery)",
+                reviews: 4.5,
+                support: 4.0,
+                suitability: { beginner: 3, intermediate: 5, expert: 5 },
+                types: ["stocks", "gold", "mutual funds"],
+                ui: 4.8
+            },
+            {
+                name: "Groww",
+                logo: "https://groww.in/static/images/logo_groww.png",
+                amountRange: { min: 500, max: 500000 },
+                brokerage: "₹20/trade (F&O), ₹0 (Delivery)",
+                reviews: 4.2,
+                support: 4.2,
+                suitability: { beginner: 5, intermediate: 4, expert: 3 },
+                types: ["stocks", "gold", "mutual funds"],
+                ui: 4.5
+            },
+            {
+                name: "Angel One",
+                logo: "https://www.angelone.in/images/logo.png",
+                amountRange: { min: 1000, max: 1000000 },
+                brokerage: "₹20/trade (F&O), ₹0 (Delivery)",
+                reviews: 4.3,
+                support: 4.5,
+                suitability: { beginner: 4, intermediate: 5, expert: 4 },
+                types: ["stocks", "gold", "mutual funds"],
+                ui: 4.2
+            },
+            {
+                name: "INDmoney",
+                logo: "https://indmoney.com/images/logo.png",
+                amountRange: { min: 500, max: 500000 },
+                brokerage: "₹20/trade (F&O), ₹0 (Delivery)",
+                reviews: 4.0,
+                support: 4.0,
+                suitability: { beginner: 4, intermediate: 4, expert: 3 },
+                types: ["stocks", "gold", "mutual funds"],
+                ui: 4.0
+            },
+            {
+                name: "Upstox",
+                logo: "https://upstox.com/static/images/logo.png",
+                amountRange: { min: 1000, max: 1000000 },
+                brokerage: "₹20/trade (F&O), ₹0 (Delivery)",
+                reviews: 4.4,
+                support: 4.3,
+                suitability: { beginner: 3, intermediate: 5, expert: 5 },
+                types: ["stocks", "gold", "mutual funds"],
+                ui: 4.6
+            }
+        ];
+
+        document.getElementById("brokerForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const amount = parseInt(document.getElementById("investmentAmount").value);
+            const level = document.getElementById("userLevel").value;
+            const type = document.getElementById("investmentType").value;
+
+            const scoredBrokers = brokers.map(broker => {
+                const amountMatch = (amount >= broker.amountRange.min && amount <= broker.amountRange.max) ? 1 : 0;
+                const levelScore = broker.suitability[level];
+                const typeMatch = broker.types.includes(type) ? 1 : 0;
+                const uiScore = broker.ui;
+                const reviewSupport = (broker.reviews + broker.support) / 2;
+
+                const totalScore = (amountMatch * 20) + (levelScore * 30) + (typeMatch * 20) + (uiScore * 20) + (reviewSupport * 10);
+                return { ...broker, totalScore };
+            });
+
+            scoredBrokers.sort((a, b) => b.totalScore - a.totalScore);
+
+            const tbody = document.getElementById("resultsBody");
+            tbody.innerHTML = "";
+            scoredBrokers.forEach((broker, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td class="px-4 py-2">${broker.name}</td>
+                    <td class="px-4 py-2">${broker.brokerage}</td>
+                    <td class="px-4 py-2">${broker.reviews}</td>
+                    <td class="px-4 py-2">${broker.support}</td>
+                    <td class="px-4 py-2">${broker.ui}</td>
+                    <td class="px-4 py-2">${broker.totalScore.toFixed(2)}</td>
+                    <td class="px-4 py-2">${index === 0 ? "Yes" : "—"}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            document.getElementById("resultsTable").classList.remove("hidden");
+        });
+    </script>
+</body>
+
+</html>
