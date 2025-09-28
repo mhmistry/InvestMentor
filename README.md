@@ -17,7 +17,7 @@ It provides three main tools:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 - **Backend:** Django (Python)  
 - **Frontend:** HTML, TailwindCSS, Chart.js, Vanilla JS  
 - **AI Integration:** LLaMA 2 via [Ollama](https://ollama.ai/)  
@@ -49,7 +49,7 @@ It provides three main tools:
 5. Start Django server 
     ```bash
 	python manage.py runserver   
-	Now visit http://127.0.0.1:8000/
+- Now visit http://127.0.0.1:8000/
 
 ## LLaMA 2 Integration (via Ollama)
 The AI Roadmap Generator depends on Ollama to run LLaMA locally.
